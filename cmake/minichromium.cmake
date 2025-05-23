@@ -10,8 +10,8 @@ set_target_properties(minichromium
 )
 
 target_link_libraries(minichromium PRIVATE
-    crashpad_common
-    AppleFrameworks
+    $<BUILD_INTERFACE:AppleFrameworks>
+    $<BUILD_INTERFACE:crashpad_common>
 )
 
 target_sources(minichromium PRIVATE
@@ -62,3 +62,10 @@ if(APPLE)
         ${mini_chromium_git_SOURCE_DIR}/base/strings/sys_string_conversions_mac.mm
     )
 endif()
+
+install(TARGETS minichromium
+        EXPORT ${PROJECT_NAME}Targets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+)

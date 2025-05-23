@@ -15,10 +15,10 @@ target_compile_definitions(crashpad_util PRIVATE
 
 target_link_libraries(crashpad_util PRIVATE
     minichromium
-    crashpad_common
     crashpad_compat
-    AppleFrameworks
-    PUBLIC
+    $<BUILD_INTERFACE:AppleFrameworks>
+    $<BUILD_INTERFACE:crashpad_common>
+  PUBLIC
     ZLIB::ZLIB
 )
 
@@ -225,3 +225,10 @@ if(WIN32)
         )
     endif()
 endif()
+
+install(TARGETS crashpad_util
+        EXPORT ${PROJECT_NAME}Targets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+)

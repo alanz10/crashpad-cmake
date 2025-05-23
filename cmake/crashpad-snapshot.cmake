@@ -113,3 +113,9 @@ if(NOT APPLE)
         ${crashpad_git_SOURCE_DIR}/snapshot/crashpad_types/crashpad_info_reader.cc
     )
 endif()
+
+install(TARGETS crashpad_snapshot
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+)

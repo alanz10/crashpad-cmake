@@ -1,5 +1,12 @@
+
+set(ENALBE_SHARED OFF)
+
 # Crashpad client library
-add_library(crashpad_client STATIC)
+if (ENALBE_SHARED)
+    add_library(crashpad_client SHARED)
+else()
+    add_library(crashpad_client STATIC)
+endif()
 
 set_target_properties(crashpad_client PROPERTIES
     CXX_STANDARD 14
@@ -9,17 +16,21 @@ set_target_properties(crashpad_client PROPERTIES
     VISIBILITY_INLINES_HIDDEN ON
 )
 
-target_include_directories(crashpad_client PUBLIC
-    ${mini_chromium_git_SOURCE_DIR}
-    ${crashpad_git_SOURCE_DIR}
-)
+# target_include_directories(crashpad_client PUBLIC
+#     ${mini_chromium_git_SOURCE_DIR}
+#     ${crashpad_git_SOURCE_DIR}
+# )
 
 target_link_libraries(crashpad_client PRIVATE
     minichromium
-    crashpad_common
-	crashpad_compat
+    $<BUILD_INTERFACE:crashpad_common>
+    crashpad_compat
     crashpad_util
 )
+
+if (ENALBE_SHARED)
+    target_compile_options(crashpad_client PUBLIC -fPIC)
+endif()
 
 target_sources(crashpad_client PRIVATE
     ${crashpad_git_SOURCE_DIR}/client/annotation.cc
@@ -53,3 +64,14 @@ if(WIN32)
         ${crashpad_git_SOURCE_DIR}/client/crashpad_client_win.cc
     )
 endif()
+
+install(TARGETS crashpad_client
+        EXPORT ${PROJECT_NAME}Targets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+)
+
+install(DIRECTORY ${crashpad_git_SOURCE_DIR}/client/ DESTINATION include/crashpad FILES_MATCHING PATTERN "*.h" PATTERN "*Base.h" EXCLUDE)
+install(DIRECTORY ${mini_chromium_git_SOURCE_DIR}/ DESTINATION include/crashpad/ FILES_MATCHING PATTERN "*.h" PATTERN "*Base.h" EXCLUDE)
+install(DIRECTORY ${crashpad_git_SOURCE_DIR}/util/ DESTINATION include/crashpad/util FILES_MATCHING PATTERN "*.h" PATTERN "*Base.h" EXCLUDE)

@@ -81,3 +81,9 @@ target_link_libraries(crashpad_handler PRIVATE
     ZLIB::ZLIB
     AppleFrameworks
 )
+
+install(TARGETS crashpad_handler
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+)

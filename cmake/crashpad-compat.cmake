@@ -3,7 +3,9 @@ if(APPLE)
     add_library(crashpad_compat INTERFACE)
 else()
     add_library(crashpad_compat STATIC)
-    target_link_libraries(crashpad_compat PRIVATE crashpad_common)
+    target_link_libraries(crashpad_compat PRIVATE
+        $<BUILD_INTERFACE:crashpad_common>
+    )
 
     set_target_properties(crashpad_compat
         PROPERTIES
@@ -29,7 +31,8 @@ if(WIN32)
     )
 else()
     target_include_directories(crashpad_compat INTERFACE
-        ${crashpad_git_SOURCE_DIR}/compat/non_win
+        $<BUILD_INTERFACE:${crashpad_git_SOURCE_DIR}/compat/non_win>
+        $<INSTALL_INTERFACE:include/crashpad/compat/non_win>
     )
 endif()
 
@@ -40,11 +43,13 @@ if(UNIX AND NOT APPLE)
     )
 
     target_include_directories(crashpad_compat PUBLIC
-        ${crashpad_git_SOURCE_DIR}/compat/linux
+        $<BUILD_INTERFACE:${crashpad_git_SOURCE_DIR}/compat/linux>
+        $<INSTALL_INTERFACE:include/crashpad/compat/linux>
     )
 else()
     target_include_directories(crashpad_compat INTERFACE
-        ${crashpad_git_SOURCE_DIR}/compat/non_elf
+        $<BUILD_INTERFACE:${crashpad_git_SOURCE_DIR}/compat/non_elf>
+        $<INSTALL_INTERFACE:include/crashpad/compat/non_elf>
     )
 endif()
 
@@ -54,7 +59,8 @@ if(APPLE)
     )
 else()
     target_include_directories(crashpad_compat PUBLIC
-        ${crashpad_git_SOURCE_DIR}/compat/non_mac
+        $<BUILD_INTERFACE:${crashpad_git_SOURCE_DIR}/compat/non_mac>
+        $<INSTALL_INTERFACE:include/crashpad/compat/non_mac>
     )
 endif()
 
@@ -70,3 +76,10 @@ if(ANDROID)
         ${crashpad_git_SOURCE_DIR}/compat/android
     )
 endif()
+
+install(TARGETS crashpad_compat
+        EXPORT ${PROJECT_NAME}Targets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+)

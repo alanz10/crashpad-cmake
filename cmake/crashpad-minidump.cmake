@@ -11,9 +11,9 @@ set_target_properties(crashpad_minidump PROPERTIES
 
 target_link_libraries(crashpad_minidump PRIVATE
     minichromium
-    crashpad_common
     crashpad_compat
     crashpad_util
+    $<BUILD_INTERFACE:crashpad_common>
 )
 
 target_sources(crashpad_minidump PRIVATE
@@ -42,4 +42,10 @@ target_sources(crashpad_minidump PRIVATE
     ${crashpad_git_SOURCE_DIR}/minidump/minidump_user_stream_writer.cc
     ${crashpad_git_SOURCE_DIR}/minidump/minidump_writable.cc
     ${crashpad_git_SOURCE_DIR}/minidump/minidump_writer_util.cc
+)
+
+install(TARGETS crashpad_minidump
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
 )

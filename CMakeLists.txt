@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.11)
+
 project(crashpad LANGUAGES C CXX)
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
 
 if(MSVC)
@@ -10,9 +12,20 @@ endif()
 
 # Option to build unit tests.
 option(CRASHPAD_BUILD_TESTS "Build unit tests." OFF)
+option(CRASHPAD_INSTALL "Enables the installation target" ON)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
+option(RESET_CMAKE_INSTALL_PREFIX "Reset install path" ON)
+
+if (RESET_CMAKE_INSTALL_PREFIX)
+  if (ANDROID)
+    set(CMAKE_INSTALL_PREFIX install/${ANDROID_ABI})
+  else()
+    set(CMAKE_INSTALL_PREFIX install)
+  endif()
+endif()
 
 # We are going to use the FetchContent module to grab crashpad and its dependencies.
 include(FetchContent)
@@ -125,4 +138,28 @@ if(CRASHPAD_BUILD_TESTS)
     include(crashpad-minidump-test)
     include(crashpad-client-test)
     include(crashpad-handler-test)
+endif()
+
+if(CRASHPAD_INSTALL)
+    # Add the version in a CMake readable way
+#     configure_file("cmake/crashpadConfig.cmake.in" "crashpadConfig.cmake" @ONLY)
+
+#     # Make version available in the install
+#     install(FILES "${PROJECT_BINARY_DIR}/crashpadConfig.cmake"
+#           DESTINATION "${CMAKE_INSTALL_PREFIX}/cmake/crashpad")
+
+    # Install the export target as a file
+    install(
+        EXPORT ${PROJECT_NAME}Targets
+        FILE crashpadConfig.cmake
+        NAMESPACE crashpad::
+        DESTINATION "${CMAKE_INSTALL_PREFIX}/cmake/crashpad")
+
+    # Use find_package on the installed package
+#     export(
+#         TARGETS ${PROJECT_NAME}
+#         NAMESPACE crashpad::
+#         FILE crashpadTargets.cmake)
+
+#     include(CPack)
 endif()

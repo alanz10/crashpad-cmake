@@ -12,9 +12,16 @@ set_target_properties(crashpad_tools
 
 target_link_libraries(crashpad_tools PRIVATE
     minichromium
-    crashpad_common
+    $<BUILD_INTERFACE:crashpad_common>
 )
 
 target_sources(crashpad_tools PRIVATE
     ${crashpad_git_SOURCE_DIR}/tools/tool_support.cc
+)
+
+install(TARGETS crashpad_tools
+        EXPORT ${PROJECT_NAME}Targets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
 )
