@@ -28,6 +28,11 @@ target_link_libraries(crashpad_client PRIVATE
     crashpad_util
 )
 
+target_include_directories(crashpad_client INTERFACE
+    $<INSTALL_INTERFACE:include>
+    $<INSTALL_INTERFACE:include/crashpad>
+)
+
 if (ENALBE_SHARED)
     target_compile_options(crashpad_client PUBLIC -fPIC)
 endif()

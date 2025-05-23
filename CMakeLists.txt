@@ -31,7 +31,8 @@ endif()
 include(FetchContent)
 
 # Try to find prebuilt zlib on the system to link against first before building it ourselves.
-find_package(ZLIB 1.2.8)
+# always use static zlib from source code
+# find_package(ZLIB 1.2.8)
 
 # If not found, we fetch it and build it ourselves.
 if(NOT ZLIB_FOUND AND NOT TARGET ZLIB::ZLIB)
@@ -49,8 +50,14 @@ if(NOT ZLIB_FOUND AND NOT TARGET ZLIB::ZLIB)
     endif()
 
     # Make sure headers are available for the static target and make an alias to match the Find module output.
-    target_include_directories(zlibstatic INTERFACE ${zlib_SOURCE_DIR} ${zlib_BINARY_DIR})
+#     target_include_directories(zlibstatic INTERFACE ${zlib_SOURCE_DIR} ${zlib_BINARY_DIR})
     add_library(ZLIB::ZLIB ALIAS zlibstatic)
+
+    install(TARGETS zlibstatic
+        EXPORT ${PROJECT_NAME}Targets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
 endif()
 
 find_package(Threads)
