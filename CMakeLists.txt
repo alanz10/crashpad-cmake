@@ -10,12 +10,13 @@ else()
     enable_language(ASM)
 endif()
 
-# Option to build unit tests.
-option(CRASHPAD_BUILD_TESTS "Build unit tests." OFF)
-option(CRASHPAD_INSTALL "Enables the installation target" ON)
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
+# Option to build unit tests.
+option(CRASHPAD_BUILD_TESTS "Build unit tests." OFF)
+option(CRASHPAD_INSTALL "Enables the installation target." ON)
+option(CRASHPAD_HANDLER_NAME "reset crashpad handler binary name." "")
 
 option(RESET_CMAKE_INSTALL_PREFIX "Reset install path" ON)
 

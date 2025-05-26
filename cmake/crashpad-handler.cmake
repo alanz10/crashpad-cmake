@@ -59,9 +59,15 @@ if(WIN32)
     )
 endif()
 
-add_executable(crashpad_handler ${crashpad_git_SOURCE_DIR}/handler/main.cc)
+if (NOT CRASHPAD_HANDLER_NAME)
+    set(MODULE_NAME crashpad_handler)
+else()
+    set(MODULE_NAME ${CRASHPAD_HANDLER_NAME})
+endif()
 
-set_target_properties(crashpad_handler PROPERTIES
+add_executable(${MODULE_NAME} ${crashpad_git_SOURCE_DIR}/handler/main.cc)
+
+set_target_properties(${MODULE_NAME} PROPERTIES
     CXX_STANDARD 14
     POSITION_INDEPENDENT_CODE ON
     CXX_VISIBILITY_PRESET "hidden"
@@ -69,7 +75,7 @@ set_target_properties(crashpad_handler PROPERTIES
     VISIBILITY_INLINES_HIDDEN ON
 )
 
-target_link_libraries(crashpad_handler PRIVATE
+target_link_libraries(${MODULE_NAME} PRIVATE
     minichromium
     crashpad_common
     crashpad_compat
@@ -82,7 +88,7 @@ target_link_libraries(crashpad_handler PRIVATE
     AppleFrameworks
 )
 
-install(TARGETS crashpad_handler
+install(TARGETS ${MODULE_NAME}
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
