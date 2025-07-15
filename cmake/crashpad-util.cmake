@@ -22,6 +22,13 @@ target_link_libraries(crashpad_util PRIVATE
     ZLIB::ZLIB
 )
 
+if (zlib_SOURCE_DIR)
+    target_include_directories(crashpad_util PRIVATE
+        ${zlib_SOURCE_DIR}
+        ${zlib_BINARY_DIR}
+    )
+endif()
+
 target_sources(crashpad_util PRIVATE
     ${crashpad_git_SOURCE_DIR}/util/file/delimited_file_reader.cc
     ${crashpad_git_SOURCE_DIR}/util/file/file_helper.cc

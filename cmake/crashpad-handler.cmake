@@ -21,6 +21,13 @@ target_link_libraries(crashpad_handler_obj PRIVATE
     AppleFrameworks
 )
 
+if (zlib_SOURCE_DIR)
+    target_include_directories(crashpad_handler_obj PRIVATE
+        ${zlib_SOURCE_DIR}
+        ${zlib_BINARY_DIR}
+    )
+endif()
+
 target_sources(crashpad_handler_obj PRIVATE
     ${crashpad_git_SOURCE_DIR}/handler/crash_report_upload_thread.cc
     ${crashpad_git_SOURCE_DIR}/handler/handler_main.cc
